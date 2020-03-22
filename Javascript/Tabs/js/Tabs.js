@@ -69,6 +69,8 @@ class Tabs extends HTMLElement {
     }
 
     /**
+     * Activate a tab
+     *
      * @param {Element} tab
      * @param {boolean} changeHash
      */
