@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="js/Tabs.js" type="module" defer></script>
+    <style>
+        a[aria-selected="true"] {
+            color: red;
+        }
+
+        /**
+            ANIMATIONS
+         */
+        .tab-content.is-active {
+            overflow: hidden;
+            transition: .3s;
+        }
+        .tab-content[hidden="hidden"] {
+            display: block;
+            position: absolute;
+            top: 0; right: 0; left: 0;
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+    </style>
+</head>
+<body>
+
+    <div style="height: 1200px;"></div>
+
+    <div class="tabs">
+        <nav-tabs class="tabs-nav">
+            <a href="#tab1" aria-selected="true">Tab 1</a>
+            <a href="#tab2">Tab 2</a>
+            <a href="#tab3">Tab 3</a>
+        </nav-tabs>
+        <div class="tabs-content" style="position: relative">
+            <div id="tab1" class="tab-content">
+                <p>Lorem ipsum <a href="#">dolor</a> sit amet, consectetur adipisicing elit. Alias delectus, deleniti dicta earum eligendi eos
+                    est excepturi facere id ipsa ipsam, iusto laboriosam libero minima nemo optio porro sapiente velit!</p>
+                <p>Ad asperiores aspernatur commodi ducimus, earum hic incidunt iure nam, quasi quia quisquam quos ratione rerum
+                    sapiente, sequi sint tenetur totam vero vitae voluptatem? Alias doloribus eum hic quod reiciendis.</p>
+            </div>
+            <div id="tab2" class="tab-content" hidden="hidden">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi atque consectetur, dolor doloribus id illum
+                    iure magnam maxime modi molestias necessitatibus odio quae quod repellendus repudiandae sapiente tempora
+                    tenetur vitae!</p>
+                <p>Assumenda beatae dolore dolorem ducimus ea eligendi enim et eum exercitationem id in libero minima nam nihil
+                    perferendis quam repellat repudiandae rerum saepe sit totam veniam, vitae voluptas voluptatem,
+                    voluptates.</p>
+            </div>
+            <div id="tab3" class="tab-content" hidden="hidden">
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda dignissimos ex facere, in laborum,
+                    laudantium minima nam neque nihil nulla pariatur quasi totam vel vitae. Hic odit omnis optio!</p>
+                <p>Ab adipisci amet atque autem beatae dolor dolore, dolores eos error excepturi explicabo illo inventore modi
+                    natus non numquam, quidem quod ratione repellat rerum similique soluta suscipit temporibus totam
+                    voluptas.</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="height: 1200px"></div>
+
+</body>
+</html>
