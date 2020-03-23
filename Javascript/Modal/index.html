@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/modal.css">
+    <script src="js/Modal.js" type="module" defer></script>
+</head>
+<body>
+    <modal-popup id="my-modal">
+        <h2 id="dialog-title">Ma fenêtre modale</h2>
+        <p id="dialog-desc">Je suis une fenêtre modale accessible.</p>
+        <form action="" method="post">
+            <p>
+                <label for="email">Email</label><br />
+                <input type="email" id="email" />
+            </p>
+            <p>
+                <label for="password">Mot de passe</label><br />
+                <input type="password" id="password" />
+            </p>
+            <p>
+                <button type="submit">Valider</button>
+            </p>
+        </form>
+    </modal-popup>
+    <button type="button" data-modal-popup="my-modal">
+        Ouvrir ma fenêtre modale
+    </button>
+    <a href="#" data-modal-popup="my-modal">
+        Ouvrir ma fenêtre modale
+    </a>
+</body>
+</html>

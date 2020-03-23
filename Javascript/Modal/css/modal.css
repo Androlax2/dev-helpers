@@ -1,0 +1,27 @@
+modal-popup {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    padding: 2.4rem;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    background-color: rgba(0, 0, 0, .75);
+    pointer-events: none;
+    opacity: 0;
+    transition: .2s;
+}
+modal-popup.is-active {
+    pointer-events: auto;
+    opacity: 1;
+}
+modal-popup > div {
+    flex: 1;
+    max-width: 48rem;
+    margin: auto;
+    padding: 2.4rem;
+    background-color: white;
+}
