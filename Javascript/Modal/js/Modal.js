@@ -8,6 +8,8 @@ class Modal extends HTMLElement {
         openButtons.forEach(openButton => {
             openButton.setAttribute('aria-haspopup', `dialog`);
             openButton.setAttribute('aria-controls', `modal-${id}`);
+            openButton.setAttribute('tabindex', '0');
+            openButton.setAttribute('role', 'button');
         });
 
         // Set accessibility attributes for the modal
