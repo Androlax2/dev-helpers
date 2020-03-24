@@ -1,0 +1,35 @@
+back-to-top {
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    background-color: red;
+    position: fixed;
+    bottom: 30px;
+    @media only screen and (max-width: 450px) {
+        bottom: 15px;
+    }
+    right: -50px;
+    cursor: pointer;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color .3s, right .3s ease-in-out;
+    svg {
+        width: 20px;
+        height: 20px;
+        path,
+        polygon {
+            fill: #FFF;
+            transition: fill .3s;
+        }
+    }
+    @media (hover: hover) {
+        &:hover {
+            background-color: blue;
+        }
+    }
+    &.is-active {
+        right: 15px;
+    }
+}
