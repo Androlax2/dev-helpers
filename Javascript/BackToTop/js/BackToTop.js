@@ -32,9 +32,6 @@ class BackToTop extends HTMLElement {
     constructor() {
         super();
         this.onScroll = throttle(this.onScroll.bind(this), 100);
-    }
-
-    connectedCallback() {
         window.addEventListener('scroll', this.onScroll);
         this.addEventListener('click', function (e) {
             e.preventDefault();
