@@ -35,7 +35,7 @@ class Modal extends HTMLElement {
             <button 
                 type="button"
                 aria-label="Close"
-                title="Close this modal box"
+                title="Close"
                 data-dismiss="dialog"
             >
                <span></span>
