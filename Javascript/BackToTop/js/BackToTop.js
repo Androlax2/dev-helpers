@@ -43,6 +43,9 @@ class BackToTop extends HTMLElement {
     }
 
     connectedCallback() {
+        // Disable back to top button from screen reader. They already have a shortcut to do this
+        this.setAttribute('aria-hidden', 'true');
+
         if (this.settings.appearScrollAmount > 0) {
             window.addEventListener('scroll', this.onScroll);
         } else {
