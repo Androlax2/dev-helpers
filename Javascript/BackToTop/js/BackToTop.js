@@ -1,5 +1,5 @@
 /**
- * Avoid callback call to many time
+ * Avoid callback call too many time
  *
  * @param callback
  * @param delay
