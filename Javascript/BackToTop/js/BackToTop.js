@@ -31,12 +31,23 @@ class BackToTop extends HTMLElement {
 
     constructor() {
         super();
+        this.settings = {
+            appearScrollAmount: this.getAttribute('appear-scroll-amount') || 0
+        };
+
         this.onScroll = throttle(this.onScroll.bind(this), 100);
-        window.addEventListener('scroll', this.onScroll);
         this.addEventListener('click', function (e) {
             e.preventDefault();
             this.scrollToTop();
         });
+    }
+
+    connectedCallback() {
+        if (this.settings.appearScrollAmount > 0) {
+            window.addEventListener('scroll', this.onScroll);
+        } else {
+            this.classList.add('is-active');
+        }
     }
 
     /**
@@ -71,9 +82,8 @@ class BackToTop extends HTMLElement {
      */
     onScroll() {
         let scroll = window.scrollY;
-        const appearScrollAmount = this.getAttribute('appear-scroll-amount') || 0;
 
-        if (scroll > appearScrollAmount) {
+        if (scroll > this.settings.appearScrollAmount) {
             this.classList.add('is-active');
         } else {
             this.classList.remove('is-active');
