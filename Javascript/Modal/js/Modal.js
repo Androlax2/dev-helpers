@@ -3,6 +3,8 @@ class Modal extends HTMLElement {
     connectedCallback() {
         const id = this.getAttribute('id').replace('#', '');
         const openButtons = document.querySelectorAll(`[data-modal-popup="${id}"]`);
+        const cantClosePopup = this.getAttribute('cantClose');
+        const activeByDefault = this.getAttribute('active');
 
         // Set accessibility attributes for the buttons that open the modal
         openButtons.forEach(openButton => {
@@ -21,10 +23,13 @@ class Modal extends HTMLElement {
 
         this.addTriggersEvents(id);
 
-        this.addCloseButton();
+        if (cantClosePopup === null) this.addCloseButton();
 
         // Wrap inner HTML in a role document div for accessibility use
         this.innerHTML = `<div role="document" hidden="true">${this.innerHTML}</div>`;
+
+        // Wrap inner HTML in a role document div for accessibility use
+        if (activeByDefault !== null) this.open();
     }
 
     /**
@@ -32,7 +37,7 @@ class Modal extends HTMLElement {
      */
     addCloseButton() {
         let button = `
-            <button 
+            <button
                 type="button"
                 aria-label="Close"
                 title="Close"
@@ -54,12 +59,14 @@ class Modal extends HTMLElement {
             const triggers = document.querySelectorAll(`[aria-controls="modal-${modalID}"]`);
 
             // On button click, open the modal
-            triggers.forEach(trigger => {
-                trigger.addEventListener('click', e => {
-                    e.preventDefault();
-                    this.open(trigger);
+            if (triggers) {
+                triggers.forEach(trigger => {
+                    trigger.addEventListener('click', e => {
+                        e.preventDefault();
+                        this.open(trigger);
+                    });
                 });
-            });
+            }
         });
     }
 
@@ -111,10 +118,12 @@ class Modal extends HTMLElement {
     addModalEvents(trigger) {
         // Close modal with button
         const dismissDialog = this.querySelector('[data-dismiss]');
-        dismissDialog.addEventListener('click', e => {
-            e.preventDefault();
-            this.close();
-        });
+        if (dismissDialog) {
+            dismissDialog.addEventListener('click', e => {
+                e.preventDefault();
+                this.close();
+            });
+        }
 
         // On backdrop click
         this.addEventListener('click', e => {
@@ -143,6 +152,8 @@ class Modal extends HTMLElement {
      * Close the modal
      */
     close(trigger) {
+        if (this.getAttribute('cantClose') !== null) return;
+
         this.querySelector('[role="document"]').setAttribute('hidden', 'true');
         this.setAttribute('aria-hidden', 'true');
         this.classList.remove('is-active');
