@@ -1,5 +1,5 @@
 /**
- * Avoid callback call to many time
+ * Avoid callback call too many time
  *
  * @param callback
  * @param delay
@@ -31,15 +31,26 @@ class BackToTop extends HTMLElement {
 
     constructor() {
         super();
-        this.onScroll = throttle(this.onScroll.bind(this), 100);
-    }
+        this.settings = {
+            appearScrollAmount: this.getAttribute('appear-scroll-amount') || 0
+        };
 
-    connectedCallback() {
-        window.addEventListener('scroll', this.onScroll);
+        this.onScroll = throttle(this.onScroll.bind(this), 100);
         this.addEventListener('click', function (e) {
             e.preventDefault();
             this.scrollToTop();
         });
+    }
+
+    connectedCallback() {
+        // Disable back to top button from screen reader. They already have a shortcut to do this
+        this.setAttribute('aria-hidden', 'true');
+
+        if (this.settings.appearScrollAmount > 0) {
+            window.addEventListener('scroll', this.onScroll);
+        } else {
+            this.classList.add('is-active');
+        }
     }
 
     /**
@@ -74,9 +85,8 @@ class BackToTop extends HTMLElement {
      */
     onScroll() {
         let scroll = window.scrollY;
-        const appearScrollAmount = this.getAttribute('appear-scroll-amount') || 0;
 
-        if (scroll > appearScrollAmount) {
+        if (scroll > this.settings.appearScrollAmount) {
             this.classList.add('is-active');
         } else {
             this.classList.remove('is-active');
