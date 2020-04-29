@@ -23,7 +23,7 @@ class Tabs extends HTMLElement {
 
             // Add aria attributes on the tab panel
             tabPanel.setAttribute('role', 'tabpanel');
-            tabPanel.setAttribute('aria-labelledby', `tab-${id}`)
+            tabPanel.setAttribute('aria-labelledby', `tab-${id}`);
             tabPanel.setAttribute('hidden', 'hidden');
             tabPanel.setAttribute('tabindex', '0');
 
