@@ -9,7 +9,20 @@
     <!--
      We need this for browser that doesn't support custom elements built-in (is="CUSTOM-ELEMENT")
      -->
-    <script src="https://unpkg.com/@ungap/custom-elements-builtin" defer></script>
+    <script>
+    if (this.customElements) {
+        try {
+            // feature detect browsers that "forgot" 🙄 to implement built-in extends
+            customElements.define('built-in', document.createElement('p').constructor, {'extends':'p'});
+        } catch(_) {
+            // only WebKit or Safari
+            document.write('<script src="//unpkg.com/@ungap/custom-elements-builtin"><\x2fscript>');
+        }
+    } else {
+        // only legacy browsers
+        document.write('<script src="//unpkg.com/document-register-element"><\x2fscript>');
+    }
+</script>
     <script src="js/TextareaAutoGrow.js" defer></script>
     <style>
         textarea {
