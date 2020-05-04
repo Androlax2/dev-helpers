@@ -21,11 +21,6 @@ const debounce = (callback, delay) => {
  */
 class TextareaAutoGrow extends HTMLTextAreaElement {
 
-    constructor() {
-        super();
-        this.onResize = debounce(this.onResize.bind(this), 300);
-    }
-
     connectedCallback() {
         this.addEventListener('focus', this.onFocus);
     }
@@ -34,26 +29,26 @@ class TextareaAutoGrow extends HTMLTextAreaElement {
         window.removeEventListener('resize', this.onResize);
     }
 
-    onFocus = () => {
+    onFocus() {
         this.style.overflow = 'hidden';
         this.style.resize = 'none';
         this.style.boxSizing = 'border-box';
 
         this.autoGrow();
 
-        window.addEventListener('resize', this.onResize);
+        window.addEventListener('resize', debounce((this.onResize).bind(this), 300));
         this.addEventListener('input', this.autoGrow);
         this.removeEventListener('focus', this.onFocus);
-    };
+    }
 
     onResize() {
         this.autoGrow();
-    };
+    }
 
-    autoGrow = () => {
+    autoGrow() {
         this.style.height = 'auto';
         this.style.height = `${this.scrollHeight}px`;
-    };
+    }
 
 }
 
