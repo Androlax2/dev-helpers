@@ -23,6 +23,7 @@
                 'zoom',
                 'latitude',
                 'longitude',
+                'marker-icon',
                 'map-options'
             ];
         }
@@ -36,6 +37,9 @@
                 case 'latitude':
                 case 'longitude':
                     this[name] = parseFloat(val);
+                    break;
+                case 'marker-icon':
+                    this.markerIcon = val;
                     break;
                 case 'map-options':
                     this.mapOptions = JSON.parse(val);
@@ -52,6 +56,7 @@
             this.zoom = null;
             this.latitude = null;
             this.longitude = null;
+            this.markerIcon = null;
             this.mapOptions = {};
         }
 
@@ -76,8 +81,11 @@
                         lat: this.latitude || 0,
                         lng: this.longitude || 0
                     },
-                    map: this.map
+                    map: this.map,
+                    icon: this.markerIcon
                 });
+
+                this.marker.map = this.map;
 
                 if (this.infowindowContent !== '') {
                     this.infowindow = new google.maps.InfoWindow({
