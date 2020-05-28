@@ -1,7 +1,7 @@
 /**
  * DOM Animations
  */
-class DOMAnimations
+export default class DOMAnimations
 {
 
     /**
@@ -14,26 +14,16 @@ class DOMAnimations
     static slideUp(element, duration = 500)
     {
         return new Promise((resolve, reject) => {
-            element.style.height = element.offsetHeight + 'px';
-            element.style.transitionProperty = `height, margin, padding`;
             element.style.transitionDuration = duration + 'ms';
             element.offsetHeight;
-            element.style.overflow = 'hidden';
-            element.style.height = 0;
-            element.style.paddingTop = 0;
-            element.style.paddingBottom = 0;
-            element.style.marginTop = 0;
-            element.style.marginBottom = 0;
-            window.setTimeout(function () {
-                element.style.display = 'none';
-                element.style.removeProperty('height');
-                element.style.removeProperty('padding-top');
-                element.style.removeProperty('padding-bottom');
-                element.style.removeProperty('margin-top');
-                element.style.removeProperty('margin-bottom');
-                element.style.removeProperty('overflow');
-                element.style.removeProperty('transition-duration');
-                element.style.removeProperty('transition-property');
+            element.style.height = '0px';
+            element.style.paddingTop = '0px';
+            element.style.paddingBottom = '0px';
+            element.style.marginTop = '0px';
+            element.style.marginBottom = '0px';
+
+            setTimeout(() => {
+                element.removeAttribute('style');
                 resolve(false);
             }, duration);
         });
@@ -49,21 +39,20 @@ class DOMAnimations
     static slideDown(element, duration = 500)
     {
         return new Promise((resolve, reject) => {
-            element.style.removeProperty('display');
-            let display = window.getComputedStyle(element).display;
+            let displayBefore = window.getComputedStyle(element).display;
 
-            if (display === 'none')
-                display = 'block';
+            if (displayBefore !== 'none') return;
 
-            element.style.display = display;
+            element.style.display = 'block';
             let height = element.offsetHeight;
             element.style.overflow = 'hidden';
-            element.style.height = 0;
-            element.style.paddingTop = 0;
-            element.style.paddingBottom = 0;
-            element.style.marginTop = 0;
-            element.style.marginBottom = 0;
+            element.style.height = '0px';
+            element.style.paddingTop = '0px';
+            element.style.paddingBottom = '0px';
+            element.style.marginTop = '0px';
+            element.style.marginBottom = '0px';
             element.offsetHeight;
+            element.style.boxSizing = 'border-box';
             element.style.transitionProperty = `height, margin, padding`;
             element.style.transitionDuration = duration + 'ms';
             element.style.height = height + 'px';
@@ -71,11 +60,8 @@ class DOMAnimations
             element.style.removeProperty('padding-bottom');
             element.style.removeProperty('margin-top');
             element.style.removeProperty('margin-bottom');
-            window.setTimeout(function () {
-                element.style.removeProperty('height');
-                element.style.removeProperty('overflow');
-                element.style.removeProperty('transition-duration');
-                element.style.removeProperty('transition-property');
+
+            setTimeout(() => {
                 resolve(true);
             }, duration);
         });
