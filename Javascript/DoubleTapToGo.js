@@ -1,10 +1,10 @@
 /**
  * Class to manage hover then click on touch devices
  */
-class DoubleTapToGo
+export default class DoubleTapToGo
 {
 
-    constructor(selector)
+    constructor(selector, className = 'hover')
     {
         if( !( 'ontouchstart' in window ) &&
             !navigator.msMaxTouchPoints &&
@@ -14,15 +14,15 @@ class DoubleTapToGo
             tapHover.addEventListener('click', function (e) {
                 let tapHover = this;
 
-                if (tapHover.classList.contains('hover')) {
+                if (tapHover.classList.contains(className)) {
                     return true;
                 } else {
                     let tapHovers = [...document.querySelectorAll(selector)];
 
-                    tapHover.classList.add('hover');
+                    tapHover.classList.add(className);
                     tapHovers.filter(element => {
                         if (element !== tapHover) {
-                            element.classList.remove('hover');
+                            element.classList.remove(className);
                         }
                     });
 
