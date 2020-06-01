@@ -92,6 +92,9 @@
                         content: this.infowindowContent
                     });
                     this.infowindow.open(this.map, this.marker);
+                    google.maps.event.addListener(this.marker, 'click', (function () {
+                        this.infowindow.open(this.map, this.marker);
+                    }).bind(this));
                 }
 
                 this.style.display = 'block';
