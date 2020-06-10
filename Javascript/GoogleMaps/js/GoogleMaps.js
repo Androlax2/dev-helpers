@@ -74,7 +74,12 @@
                         lng: this.longitude || 0
                     };
                 }
-                this.map = new google.maps.Map(this, this.mapOptions);
+                
+                let mapOptionsDefault = {
+                    mapTypeControl: false
+                };
+
+                this.map = new google.maps.Map(this, {...mapOptionsDefault, ...this.mapOptions});
 
                 this.marker = new google.maps.Marker({
                     position: {
