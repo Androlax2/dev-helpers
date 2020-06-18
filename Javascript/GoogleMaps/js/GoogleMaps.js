@@ -74,9 +74,10 @@
                         lng: this.longitude || 0
                     };
                 }
-                
+
                 let mapOptionsDefault = {
-                    mapTypeControl: false
+                    mapTypeControl: false,
+                    streetViewControl: false,
                 };
 
                 this.map = new google.maps.Map(this, {...mapOptionsDefault, ...this.mapOptions});
