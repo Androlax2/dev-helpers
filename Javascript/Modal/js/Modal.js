@@ -28,7 +28,6 @@ class Modal extends HTMLElement {
         // Wrap inner HTML in a role document div for accessibility use
         this.innerHTML = `<div role="document" hidden="true">${this.innerHTML}</div>`;
 
-        // Wrap inner HTML in a role document div for accessibility use
         if (activeByDefault !== null) this.open();
     }
 
