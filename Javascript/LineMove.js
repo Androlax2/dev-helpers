@@ -36,6 +36,13 @@ const throttle = (callback, delay) => {
  */
 export default class LineMove
 {
+    
+    /**
+     * How many times line moved (to debug correctly)
+     *
+     * @type {number}
+     */
+    static lineMoves = 0;
 
     constructor(settings = {})
     {
@@ -81,6 +88,16 @@ export default class LineMove
             }
         }
     }
+    
+    /**
+     * Increment and return total line moves
+     *
+     * @returns {number}
+     */
+    static getLineMoves()
+    {
+        return this.lineMoves++;
+    }
 
     /**
      * Move the line to an element
@@ -100,7 +117,7 @@ export default class LineMove
 
         if (this.settings.debug) {
             console.info(
-                `%c Line\n%o \n has moved to \n %o.`,
+                `%c ${LineMove.getLineMoves()} : Line\n%o \n has moved to \n %o. \n`,
                 'background: #222; color: #bada55',
                 this.$el,
                 $element
