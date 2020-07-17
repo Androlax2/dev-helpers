@@ -3,7 +3,7 @@ class Modal extends HTMLElement {
     connectedCallback() {
         const id = this.getAttribute('id').replace('#', '');
         const openButtons = document.querySelectorAll(`[data-modal-popup="${id}"]`);
-        const cantClosePopup = this.getAttribute('cantClose');
+        const cantClosePopup = this.getAttribute('cant-close');
         const activeByDefault = this.getAttribute('active');
 
         // Set accessibility attributes for the buttons that open the modal
@@ -57,10 +57,18 @@ class Modal extends HTMLElement {
         document.addEventListener('DOMContentLoaded', () => {
             const triggers = document.querySelectorAll(`[aria-controls="modal-${modalID}"]`);
 
-            // On button click, open the modal
+            // On button click or Enter press, open the modal
             if (triggers) {
                 triggers.forEach(trigger => {
+                    // Handle click
                     trigger.addEventListener('click', e => {
+                        e.preventDefault();
+                        this.open(trigger);
+                    });
+                    
+                    // Handle Enter key
+                    trigger.addEventListener('keypress', e => {
+                        if (e.code !== 'Enter') return;
                         e.preventDefault();
                         this.open(trigger);
                     });
@@ -120,13 +128,13 @@ class Modal extends HTMLElement {
         if (dismissDialog) {
             dismissDialog.addEventListener('click', e => {
                 e.preventDefault();
-                this.close();
+                this.close(trigger);
             });
         }
 
         // On backdrop click
         this.addEventListener('click', e => {
-            if (e.target === this) this.close();
+            if (e.target === this) this.close(trigger);
         });
 
         // When pressing ESC, close the modal
@@ -151,7 +159,7 @@ class Modal extends HTMLElement {
      * Close the modal
      */
     close(trigger) {
-        if (this.getAttribute('cantClose') !== null) return;
+        if (this.getAttribute('cant-close') !== null) return;
 
         this.querySelector('[role="document"]').setAttribute('hidden', 'true');
         this.setAttribute('aria-hidden', 'true');
