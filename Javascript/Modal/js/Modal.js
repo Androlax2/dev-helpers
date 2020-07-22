@@ -29,6 +29,9 @@ class Modal extends HTMLElement {
         this.innerHTML = `<div role="document" hidden="true">${this.innerHTML}</div>`;
 
         if (activeByDefault !== null) this.open();
+
+        // Inner focusable elements of the modal shouldn't be tabbable
+        this.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1'));
     }
 
     /**
@@ -51,6 +54,23 @@ class Modal extends HTMLElement {
     }
 
     /**
+     * Get an array of the focusable elements
+     *
+     * @returns {string[]}
+     */
+    getFocusableElements()
+    {
+        return [
+            '[href]',
+            'button:not([disabled])',
+            'input:not([disabled])',
+            'select:not([disabled])',
+            'textarea:not([disabled])',
+            '[tabindex]:not([tabindex="-1"])',
+        ];
+    }
+
+    /**
      * Add all events listeners
      */
     addTriggersEvents(modalID) {
@@ -65,7 +85,7 @@ class Modal extends HTMLElement {
                         e.preventDefault();
                         this.open(trigger);
                     });
-                    
+
                     // Handle Enter key
                     trigger.addEventListener('keypress', e => {
                         if (e.code !== 'Enter') return;
@@ -81,14 +101,7 @@ class Modal extends HTMLElement {
      * When modal is open, we should focus elements inner
      */
     focusModal() {
-        const focusableElementsArray = [
-            '[href]',
-            'button:not([disabled])',
-            'input:not([disabled])',
-            'select:not([disabled])',
-            'textarea:not([disabled])',
-            '[tabindex]:not([tabindex="-1"])',
-        ];
+        const focusableElementsArray = this.getFocusableElements();
         const focusableElements = this.querySelectorAll(focusableElementsArray);
         const firstFocusableElement = focusableElements[0];
         const lastFocusableElement = focusableElements[focusableElements.length - 1];
@@ -151,6 +164,8 @@ class Modal extends HTMLElement {
         this.setAttribute('aria-hidden', 'false');
         this.classList.add('is-active');
 
+        this.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '0'));
+
         this.focusModal();
         this.addModalEvents(trigger);
     }
@@ -164,6 +179,8 @@ class Modal extends HTMLElement {
         this.querySelector('[role="document"]').setAttribute('hidden', 'true');
         this.setAttribute('aria-hidden', 'true');
         this.classList.remove('is-active');
+
+        this.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1'));
 
         // Restoring focus
         if (trigger) trigger.focus();
