@@ -104,7 +104,7 @@ export default class Menu
             $dropdown.setAttribute('aria-hidden', 'true');
 
             $dropdown.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1'));
-            Array.from($dropdown.children).map($dropdownChildren => $dropdownChildren.setAttribute('role', 'menuitem'));
+            $dropdown.querySelectorAll('a').forEach($dropdownChildren => $dropdownChildren.setAttribute('role', 'menuitem'));
         });
     }
 
