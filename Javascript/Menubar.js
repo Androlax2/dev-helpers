@@ -47,7 +47,7 @@ export default class Menubar
     cacheDOM()
     {
         this.$container = document.querySelector(this.container);
-        this.$dropdowns = document.querySelectorAll(this.settings.dropdownMenu);
+        this.$dropdowns = this.$container.querySelectorAll(this.settings.dropdownMenu);
         if (this.settings.glueTo.el) this.$glueTo = document.querySelector(this.settings.glueTo.el);
     }
 
