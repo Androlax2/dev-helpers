@@ -1,7 +1,7 @@
 import {addMultipleEventListener, debounce} from "../helpers";
 import hoverIntent from '../vendors/hoverintent';
 
-export default class Menu
+export default class Menubar
 {
 
     /**
