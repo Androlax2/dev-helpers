@@ -1,10 +1,15 @@
-class Modal extends HTMLElement {
+export default class Modal extends HTMLElement {
 
     connectedCallback() {
         const id = this.getAttribute('id').replace('#', '');
         const openButtons = document.querySelectorAll(`[data-modal-popup="${id}"]`);
-        const cantClosePopup = this.getAttribute('cant-close');
-        const activeByDefault = this.getAttribute('active');
+        const cantClosePopup = (this.getAttribute('cant-close') !== null);
+        const noCloseButton = (this.getAttribute('no-close-button') !== null);
+        const activeByDefault = (this.getAttribute('active') !== null);
+        const showCloseButton = () => {
+            if (noCloseButton) return false;
+            return !cantClosePopup;
+        };
 
         // Set accessibility attributes for the buttons that open the modal
         openButtons.forEach(openButton => {
@@ -23,12 +28,12 @@ class Modal extends HTMLElement {
 
         this.addTriggersEvents(id);
 
-        if (cantClosePopup === null) this.addCloseButton();
+        if (showCloseButton()) this.addCloseButton();
 
         // Wrap inner HTML in a role document div for accessibility use
         this.innerHTML = `<div role="document" hidden="true">${this.innerHTML}</div>`;
 
-        if (activeByDefault !== null) this.open();
+        if (activeByDefault) this.open();
 
         // Inner focusable elements of the modal shouldn't be tabbable
         this.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1'));
@@ -187,5 +192,3 @@ class Modal extends HTMLElement {
     }
 
 }
-
-customElements.define('modal-popup', Modal);
