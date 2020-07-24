@@ -1,6 +1,11 @@
 import {addMultipleEventListener, debounce} from "../helpers";
 import hoverIntent from '../vendors/hoverintent';
 
+/**
+ * Handle menubar
+ *
+ * Accessibility : https://www.w3.org/WAI/tutorials/menus/application-menus/
+ */
 export default class Menubar
 {
 
@@ -68,6 +73,45 @@ export default class Menubar
         ];
     }
 
+    focus($el)
+    {
+        if ($el) $el.focus();
+    }
+
+    /**
+     * Get focusable elements in menu (top level)
+     *
+     * @returns {[]|*[]}
+     */
+    getFocusableElementsInMenu()
+    {
+        if (!this.$focusableElementsInMenu) {
+            const $menuFocusableElements = this.$container.querySelectorAll(this.getFocusableElements());
+            this.$focusableElementsInMenu = [];
+            $menuFocusableElements.forEach($menuFocusableElement => $menuFocusableElement.getAttribute('tabindex') !== '-1' ? this.$focusableElementsInMenu.push($menuFocusableElement) : null);
+        }
+        return this.$focusableElementsInMenu;
+    }
+
+    /**
+     * Get focusable elements outside the top level menu
+     *
+     * Return an array with the previous focusable element at the index 0 and the next one at the index 1
+     *
+     * @returns {[any, any]|any[]}
+     */
+    getFocusableElementsOutsideMenu()
+    {
+        if (!this.$focusableElementsOutsideMenu) {
+            const $focusableElementsInMenu = this.getFocusableElementsInMenu();
+            this.$focusableElementsOutsideMenu = [
+                this.getPreviousFocusableElement($focusableElementsInMenu[0]),
+                this.getNextFocusableElement($focusableElementsInMenu[$focusableElementsInMenu.length - 1])
+            ];
+        }
+        return this.$focusableElementsOutsideMenu;
+    }
+
     /**
      * Glue dropdowns to the bottom of the glueTo settings
      */
@@ -92,6 +136,11 @@ export default class Menubar
      */
     accessibility()
     {
+        // Parent accessibility
+        this.$container.setAttribute('role', 'menubar');
+        Array.from(this.$container.children).forEach($menuChildren => $menuChildren.setAttribute('role', 'menuitem'));
+
+        // Dropdowns accessibility
         this.$dropdowns.forEach($dropdown => {
             const $parent = $dropdown.parentNode;
 
@@ -104,18 +153,39 @@ export default class Menubar
             $dropdown.setAttribute('aria-hidden', 'true');
 
             $dropdown.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1'));
-            $dropdown.querySelectorAll('a').forEach($dropdownChildren => $dropdownChildren.setAttribute('role', 'menuitem'));
+            Array.from($dropdown.children).forEach($dropdownChildren => $dropdownChildren.setAttribute('role', 'menuitem'));
+        });
+
+        // Menu Events
+        this.currentFocusInMenu = null;
+        const $focusableElementsInMenu = this.getFocusableElementsInMenu();
+        $focusableElementsInMenu.forEach($focusableElementInMenu => {
+            $focusableElementInMenu.addEventListener('focus', () => this.currentFocusInMenu = $focusableElementsInMenu.indexOf($focusableElementInMenu));
+        });
+        this.$container.addEventListener('keydown', e => {
+            switch (e.keyCode) {
+                case 37: // Arrow left
+                    this.currentFocusInMenu = this.currentFocusInMenu === 0 ? $focusableElementsInMenu.length - 1 : this.currentFocusInMenu - 1;
+                    this.focus($focusableElementsInMenu[this.currentFocusInMenu]);
+                    break;
+                case 39: // Arrow right
+                    this.currentFocusInMenu = this.currentFocusInMenu === ($focusableElementsInMenu.length - 1) ? 0 : this.currentFocusInMenu + 1;
+                    this.focus($focusableElementsInMenu[this.currentFocusInMenu]);
+                    break;
+                case 9:
+                    e.preventDefault();
+                    if (e.shiftKey) {
+                        this.focus(this.getFocusableElementsOutsideMenu()[0]);
+                    } else {
+                        this.focus(this.getFocusableElementsOutsideMenu()[1]);
+                    }
+                    break;
+            }
         });
     }
 
     /**
      * Add dropdown events to menu items
-     *
-     * Accessibility :
-     *
-     * - Pressing Enter on the item will open the dropdown menu
-     * - Pressing Enter a second time on the item will redirect to the link if there is one
-     * - Pressing Escape will close the dropdown menu and trigger back to the trigger item
      */
     dropdownEvents()
     {
@@ -124,12 +194,15 @@ export default class Menubar
 
             // Accessibility
             $parent.addEventListener('keydown', e => {
-                switch (e.key) {
-                    case 'Enter':
+                switch (e.keyCode) {
+                    case 32: // Space
+                    case 13: // Enter
+                    case 8: // Return
+                    case 40: // Arrow down
                         if (!$parent.classList.contains(this.settings.activeClass)) e.preventDefault();
                         this.open($dropdown, $parent.querySelectorAll(this.getFocusableElements())[0]);
                         break;
-                    case 'Escape':
+                    case 27: // Escape
                         this.close($dropdown, $parent.querySelectorAll(this.getFocusableElements())[0]);
                         break;
                 }
@@ -148,9 +221,6 @@ export default class Menubar
 
     /**
      * Handle accessibility events in the dropdown menu
-     *
-     * - Use the up / down arrows to navigate through the items
-     * - If the user went through the last item or the first item of the menu, we will close the menu
      */
     dropdownAccessibilityEvents($dropdown, trigger)
     {
@@ -159,52 +229,42 @@ export default class Menubar
         const lastFocusableElement = focusableElements[focusableElements.length - 1];
 
         if (!firstFocusableElementInDropdown) return;
-        window.setTimeout(() => {
+        window.setTimeout( () => {
             focusableElements.forEach(focusableElement => {
                 if (!focusableElement.addEventListener) return;
 
                 focusableElement.addEventListener('keydown', e => {
-                    const tab = e.key === 'Tab';
-                    const activeElement = document.activeElement;
-
-                    // Tab events
-                    if (tab) {
-                        if (e.shiftKey) {
-                            if (e.target === firstFocusableElementInDropdown) { // Shift + Tab
-                                // If the user shift tabbed on the first element in the dropdown, we close the menu
-                                e.preventDefault();
-                                this.close($dropdown, trigger);
-                            } else if (activeElement === trigger) {
-                                // If the menu is open and the user want to go back (shift + tab)
-                                this.close($dropdown, trigger);
-                            }
-                        } else if (e.target === lastFocusableElement) { // Tab
-                            // If the user tabbed on the last element in the dropdown, we close the menu
-                            e.preventDefault();
-                            this.close($dropdown, this.getNextFocusableElement(focusableElement) ?? trigger);
-                        }
-                    } else { // Arrows events
-                        if (e.key === 'ArrowDown') {
+                    switch (e.key) {
+                        case 'ArrowDown':
                             const nextFocusableElement = focusableElements[Array.from(focusableElements).indexOf(focusableElement) + 1];
 
                             // While there is a next focusable element in the dropdown, we focus it
-                            // Else, we close the dropdown
+                            // Else we go back to the first focusable element in the dropdown
                             if (nextFocusableElement) {
                                 nextFocusableElement.focus();
                             } else {
-                                this.close($dropdown, this.getNextFocusableElement(focusableElement) ?? trigger);
+                                firstFocusableElementInDropdown.focus();
                             }
-                        } else if (e.key === 'ArrowUp') {
+                            break;
+                        case 'ArrowUp':
                             const previousFocusableElement = focusableElements[Array.from(focusableElements).indexOf(focusableElement) - 1];
 
                             // While there is a previous focusable element in the dropdown AND the element isn't the "trigger", we focus it
-                            // Else, we close the dropdown
+                            // Else we go back to the last focusable element in the dropdown
                             if (previousFocusableElement && Array.from(focusableElements).indexOf(previousFocusableElement) > 0) {
                                 previousFocusableElement.focus();
                             } else {
-                                this.close($dropdown, trigger);
+                                lastFocusableElement.focus();
                             }
-                        }
+                            break;
+                        case 'Tab':
+                            e.preventDefault();
+                            this.close($dropdown);
+                            break;
+                        case 'ArrowRight':
+                        case 'ArrowLeft':
+                            this.close($dropdown);
+                            break;
                     }
                 });
             });
@@ -222,6 +282,19 @@ export default class Menubar
         const focusableElements = document.querySelectorAll(this.getFocusableElements());
         const index = Array.from(focusableElements).indexOf(el);
         return focusableElements[index + 1];
+    }
+
+    /**
+     * Get previous focusable element of an element
+     *
+     * @param el
+     * @returns {any}
+     */
+    getPreviousFocusableElement(el)
+    {
+        const focusableElements = document.querySelectorAll(this.getFocusableElements());
+        const index = Array.from(focusableElements).indexOf(el);
+        return focusableElements[index - 1];
     }
 
     /**
