@@ -172,7 +172,7 @@ export default class Menubar
                     this.currentFocusInMenu = this.currentFocusInMenu === ($focusableElementsInMenu.length - 1) ? 0 : this.currentFocusInMenu + 1;
                     this.focus($focusableElementsInMenu[this.currentFocusInMenu]);
                     break;
-                case 9:
+                case 9: // Tab
                     e.preventDefault();
                     if (e.shiftKey) {
                         this.focus(this.getFocusableElementsOutsideMenu()[0]);
