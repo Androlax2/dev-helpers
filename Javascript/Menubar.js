@@ -198,9 +198,16 @@ export default class Menubar
                     case 32: // Space
                     case 13: // Enter
                     case 8: // Return
-                    case 40: // Arrow down
                         if (!$parent.classList.contains(this.settings.activeClass)) e.preventDefault();
-                        this.open($dropdown, $parent.querySelectorAll(this.getFocusableElements())[0]);
+                        this.open($dropdown);
+                        break;
+                    case 38: // Arrow up
+                        if ($parent.classList.contains(this.settings.activeClass)) return;
+                        this.open($dropdown, $dropdown.querySelectorAll(this.getFocusableElements()).length);
+                        break;
+                    case 40: // Arrow down
+                        if ($parent.classList.contains(this.settings.activeClass)) return;
+                        this.open($dropdown, 1);
                         break;
                     case 27: // Escape
                         this.close($dropdown, $parent.querySelectorAll(this.getFocusableElements())[0]);
@@ -222,11 +229,15 @@ export default class Menubar
     /**
      * Handle accessibility events in the dropdown menu
      */
-    dropdownAccessibilityEvents($dropdown, trigger)
+    dropdownAccessibilityEvents($dropdown, focusIndex)
     {
         const focusableElements = $dropdown.parentNode.querySelectorAll(this.getFocusableElements());
         const firstFocusableElementInDropdown = focusableElements[1];
         const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+        if (focusIndex) {
+            focusableElements[focusIndex].focus();
+        }
 
         if (!firstFocusableElementInDropdown) return;
         window.setTimeout( () => {
@@ -301,9 +312,9 @@ export default class Menubar
      * Open dropdown
      *
      * @param $dropdown
-     * @param trigger
+     * @param focus
      */
-    open($dropdown, trigger)
+    open($dropdown, focus)
     {
         const $parent = $dropdown.parentNode;
 
@@ -316,7 +327,7 @@ export default class Menubar
         $dropdown.setAttribute('aria-hidden', 'false');
         $dropdown.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '0'));
 
-        this.dropdownAccessibilityEvents($dropdown, trigger);
+        this.dropdownAccessibilityEvents($dropdown, focus);
     }
 
     /**
