@@ -131,8 +131,6 @@ export default class Menubar
 
     /**
      * Set up accessibility for the menu
-     *
-     * https://a11y-guidelines.orange.com/web_EN/exemples/simple-menu/simple-menu.html#
      */
     accessibility()
     {
@@ -202,10 +200,12 @@ export default class Menubar
                         this.open($dropdown);
                         break;
                     case 38: // Arrow up
+                        e.preventDefault();
                         if ($parent.classList.contains(this.settings.activeClass)) return;
                         this.open($dropdown, $dropdown.querySelectorAll(this.getFocusableElements()).length);
                         break;
                     case 40: // Arrow down
+                        e.preventDefault();
                         if ($parent.classList.contains(this.settings.activeClass)) return;
                         this.open($dropdown, 1);
                         break;
@@ -247,6 +247,7 @@ export default class Menubar
                 focusableElement.addEventListener('keydown', e => {
                     switch (e.key) {
                         case 'ArrowDown':
+                            e.preventDefault();
                             const nextFocusableElement = focusableElements[Array.from(focusableElements).indexOf(focusableElement) + 1];
 
                             // While there is a next focusable element in the dropdown, we focus it
@@ -258,6 +259,7 @@ export default class Menubar
                             }
                             break;
                         case 'ArrowUp':
+                            e.preventDefault();
                             const previousFocusableElement = focusableElements[Array.from(focusableElements).indexOf(focusableElement) - 1];
 
                             // While there is a previous focusable element in the dropdown AND the element isn't the "trigger", we focus it
