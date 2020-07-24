@@ -14,6 +14,7 @@ export default class DOMAnimations
     static slideUp(element, duration = 500)
     {
         return new Promise((resolve, reject) => {
+            element.style.height = element.getAttribute('data-height') + 'px';
             element.style.transitionDuration = duration + 'ms';
             element.offsetHeight;
             element.style.height = '0px';
@@ -62,6 +63,8 @@ export default class DOMAnimations
             element.style.removeProperty('margin-bottom');
 
             setTimeout(() => {
+                element.setAttribute('data-height', height);
+                element.style.height = 'auto';
                 resolve(true);
             }, duration);
         });
