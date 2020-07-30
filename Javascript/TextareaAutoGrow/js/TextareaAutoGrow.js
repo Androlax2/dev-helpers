@@ -47,7 +47,7 @@ class TextareaAutoGrow extends HTMLTextAreaElement {
 
     autoGrow() {
         this.style.height = 'auto';
-        this.style.height = `${this.scrollHeight}px`;
+        this.style.height = `${this.scrollHeight + 1}px`;
     }
 
 }
