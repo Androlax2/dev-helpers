@@ -1,0 +1,62 @@
+.section .textImage .container {
+  max-width: 100%;
+  padding: 0;
+}
+.textImage {
+  font-size: 0.9rem;
+  @include mq('tablet', 'min') {
+    font-size: 1rem;
+  }
+  > div {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+  }
+}
+@include mq('tablet-wide', 'min') {
+  .textImage--left {
+    > div {
+      flex-direction: row;
+    }
+  }
+  .textImage--right {
+    > div {
+      flex-direction: row-reverse;
+    }
+  }
+}
+
+// IMAGE
+// ================================
+
+@include mq('tablet-wide') {
+  .textImage__image {
+    width: 100% !important;
+    margin-top: em(35);
+  }
+}
+.textImage__image img {
+  display: block;
+  width: 100%;
+}
+
+// TEXT
+// ================================
+
+@include mq('tablet-wide', 'min') {
+  .textImage--right .textImage__text {
+    padding-right: rem(40);
+  }
+  .textImage--left .textImage__text {
+    padding-left: rem(40);
+  }
+}
+.textImage__text {
+  flex: 1;
+  > a:last-of-type {
+    margin-top: em(30);
+    @include mq('tablet', 'min') {
+      margin-top: rem(45);
+    }
+  }
+}
