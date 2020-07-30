@@ -1,0 +1,11 @@
+.lastPosts__inner {
+  display: grid;
+  grid-gap: rem(15);
+  @include mq(450, 'min') {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+.lastPosts__all {
+  text-align: center;
+  margin-top: rem(45);
+}
