@@ -1,0 +1,112 @@
+:root {
+  --anchor-block-columns: 1fr;
+  --anchor-block-areas: "content";
+  @include mq('tablet', 'min') {
+    --anchor-block-columns: 0.7fr auto 2fr;
+    --anchor-block-areas:
+            "links border content";
+  }
+
+  // Border
+  --anchor-block-border-width: 3px;
+  --anchor-block-border-background: red;
+  --anchor-block-border-margin: #{rem(40)};
+
+  // Content
+  --anchor-block-content-margin: #{rem(50)};
+  --anchor-block-content-inner-margin: #{rem(40)};
+
+  // Links
+  --anchor-block-links-offset: 20px;
+  --anchor-block-links-margin: #{em(35)};
+  --anchor-block-links-sub-level-margin: #{em(20)};
+  --anchor-block-links-sub-level-item-margin: #{em(20)};
+}
+
+.anchorBlock {
+  display: grid;
+  grid-template-columns: var(--anchor-block-columns);
+  grid-template-areas: var(--anchor-block-areas);
+}
+
+// LINKS
+// ================================
+
+.anchorBlock__links {
+  grid-area: links;
+  display: none;
+  @include mq('tablet', 'min') {
+    display: block;
+    ul {
+      position: sticky;
+      top: calc(var(--header-height, 0px) + var(--anchor-block-links-offset, 20px));
+      .admin-bar & {
+        top: calc(var(--header-height, 0px) + var(--anchor-block-links-offset, 20px) + 46px);
+        @media screen and (min-width: 783px) {
+          top: calc(var(--header-height, 0px) + var(--anchor-block-links-offset, 20px) + 32px);
+        }
+      }
+    }
+  }
+}
+.anchorBlock__links li,
+.anchorBlock__links a {
+  display: block;
+  span {
+    margin-left: rem(6);
+  }
+}
+.anchorBlock__links > ul {
+  > li {
+    > a { // FIRST LEVEL
+      // Style first level links
+    }
+    > ul {
+      margin-top: var(--anchor-block-links-sub-level-margin);
+      > li {
+        > a { // SECOND LEVEL
+          // Style second level links
+        }
+        + li {
+          margin-top: var(--anchor-block-links-sub-level-item-margin);
+        }
+      }
+    }
+    + li {
+      margin-top: var(--anchor-block-links-margin);
+    }
+  }
+}
+.anchorBlock__links li.active-parent > a,
+.anchorBlock__links li.active > a,
+.anchorBlock__links a:hover {
+  // Hover links
+}
+
+// BORDER
+// ================================
+
+.anchorBlock__border {
+  grid-area: border;
+  width: var(--anchor-block-border-width);
+  background: var(--anchor-block-border-background);
+  margin: 0 var(--anchor-block-border-margin);
+  height: 100%;
+}
+
+// CONTENT
+// ================================
+
+.anchorBlock__content {
+  grid-area: content;
+}
+.anchorBlock__content .defaultSlider img {
+  width: 100%;
+}
+.anchorBlock__content__block + .anchorBlock__content__block {
+  position: relative;
+  margin-top: var(--anchor-block-content-margin);
+}
+.anchorBlock__content__block__inner + .anchorBlock__content__block__inner {
+  margin-top: var(--anchor-block-content-inner-margin);
+}
