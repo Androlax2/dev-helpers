@@ -2,7 +2,7 @@
   --anchor-block-columns: 1fr;
   --anchor-block-areas: "content";
   @include mq('tablet', 'min') {
-    --anchor-block-columns: 0.7fr auto 2fr;
+    --anchor-block-columns: 1fr auto 2fr;
     --anchor-block-areas:
             "links border content";
   }
@@ -92,6 +92,10 @@
   background: var(--anchor-block-border-background);
   margin: 0 var(--anchor-block-border-margin);
   height: 100%;
+  display: none;
+  @include mq('tablet', 'min') {
+    display: block;
+  }
 }
 
 // CONTENT
