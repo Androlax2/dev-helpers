@@ -1,0 +1,18 @@
+:root {
+  --buttons-block-margin-top: #{rem(25)};
+  --buttons-block-margin-sides: #{rem(20)};
+}
+
+.buttonsBlock {
+  --button-outline-border-padding: #{rem(10)} #{rem(15)};
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: calc(var(--buttons-block-margin-top) * -1) calc((var(--buttons-block-margin-sides) / 2) * -1) 0;
+}
+.buttonsBlock > * {
+  margin: var(--buttons-block-margin-top) calc(var(--buttons-block-margin-sides) / 2) 0;
+  width: 100%;
+}
