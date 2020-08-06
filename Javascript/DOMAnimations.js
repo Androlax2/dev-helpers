@@ -28,7 +28,7 @@ export default class DOMAnimations
                 resolve(false);
             }, duration);
         });
-    };
+    }
 
     /**
      * SlideDown
@@ -68,7 +68,7 @@ export default class DOMAnimations
                 resolve(true);
             }, duration);
         });
-    };
+    }
 
     /**
      * SlideToggle
@@ -83,6 +83,60 @@ export default class DOMAnimations
             return this.slideDown(element, duration);
         } else {
             return this.slideUp(element, duration);
+        }
+    }
+
+    /**
+     * Fade in an element
+     *
+     * @param element
+     * @param display
+     */
+    static fadeIn(element, display)
+    {
+        element.style.opacity = 0;
+        element.style.display = display || "block";
+
+        (function fade() {
+            let val = parseFloat(element.style.opacity);
+            if (!((val += .1) > 1)) {
+                element.style.opacity = val;
+                requestAnimationFrame(fade);
+                console.log(val);
+            }
+        })();
+    }
+
+    /**
+     * Fade out an element
+     *
+     * @param element
+     */
+    static fadeOut(element)
+    {
+        element.style.opacity = 1;
+
+        (function fade() {
+            if ((element.style.opacity -= .1) < 0) {
+                element.style.display = "none";
+            } else {
+                requestAnimationFrame(fade);
+            }
+        })();
+    }
+
+    /**
+     * Fade toggle
+     *
+     * @param element
+     * @param display
+     */
+    static fadeToggle(element, display)
+    {
+        if (window.getComputedStyle(element).display === 'none') {
+            return this.fadeIn(element, display);
+        } else {
+            return this.fadeOut(element);
         }
     }
 
