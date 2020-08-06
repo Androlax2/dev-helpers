@@ -1,4 +1,4 @@
-if (!document.querySelector('.anchorBlock')) return;
+        if (!document.querySelector('.anchorBlock')) return;
 
         new GumShoe('.anchorBlock__links a', {
             reflow: true,
@@ -9,6 +9,8 @@ if (!document.querySelector('.anchorBlock')) return;
                     $adminBar = document.querySelector('#wpadminbar'),
                     adminBarHeight = ($adminBar ? $adminBar.getBoundingClientRect().height : 0),
                     headerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height'));
+
+                if (!headerHeight) headerHeight = 0;
 
                 return defaultOffset + headerHeight + adminBarHeight;
             }
