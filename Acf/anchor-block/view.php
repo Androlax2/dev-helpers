@@ -4,7 +4,7 @@
 ?>
 
 <div class="anchorBlock">
-	<div class="anchorBlock__links">
+	<div class="anchorBlock__links" aria-hidden="true">
 		<ul>
 			<?php foreach ($blocks as $block): ?>
 				<?php $numberOfBlocks = count($block['inner_block']); ?>
