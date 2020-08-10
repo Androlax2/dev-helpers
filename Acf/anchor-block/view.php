@@ -44,7 +44,7 @@
 			<div class="anchorBlock__content__block">
 				<?php foreach ($block['inner_block'] as $innerBlock): ?>
 					<div id="<?php echo $slugify->slugify(strip_tags($innerBlock['title'])); ?>" class="anchorBlock__content__block__inner applyStyles">
-						<?php echo $innerBlock['title']; ?>
+						<?php echo !$innerBlock['different_content_title'] ? $innerBlock['title'] : $innerBlock['content_title']; ?>
 						<?php echo $innerBlock['text']; ?>
 					</div>
 				<?php endforeach; ?>
