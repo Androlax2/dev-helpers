@@ -15,7 +15,7 @@ $anchorBlock
 		'required' => true,
 		'label' => 'Blocs',
 		'min' => 1,
-		'button_label' => 'Ajouter un bloc'
+		'button_label' => 'Ajouter un bloc d\'ancre'
 	])
 		->addRepeater('inner_block', [
 			'required' => true,
