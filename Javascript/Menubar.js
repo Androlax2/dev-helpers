@@ -122,6 +122,11 @@ export default class Menubar
         const {bottom} = this.$glueTo.getBoundingClientRect();
 
         this.$dropdowns.forEach($dropdown => {
+            const $parent = $dropdown.parentNode;
+
+            // If it's a sub menu of a sub menu, don't glue
+            if ($parent.parentNode !== this.$container) return;
+
             $dropdown.style.marginTop = '';
             const {top} = $dropdown.getBoundingClientRect();
 
@@ -141,8 +146,14 @@ export default class Menubar
         // Dropdowns accessibility
         this.$dropdowns.forEach($dropdown => {
             const $parent = $dropdown.parentNode;
+            const isParentSubMenu = ($parent.parentNode === this.$container);
 
             // Parent accessibility
+            if (isParentSubMenu) {
+                $parent.setAttribute('data-parent-sub-menu', 'true');
+            } else {
+                $parent.setAttribute('data-inner-sub-menu', 'true');
+            }
             $parent.setAttribute('aria-haspopup', 'true');
             $parent.setAttribute('aria-expanded', 'false');
 
@@ -183,12 +194,13 @@ export default class Menubar
     }
 
     /**
-     * Add dropdown events to menu items
+     * Add dropdown events to menu items (parent)
      */
     dropdownEvents()
     {
         this.$dropdowns.forEach($dropdown => {
             const $parent = $dropdown.parentNode;
+            const isInnerSubMenu = $parent.getAttribute('data-inner-sub-menu') === 'true';
 
             // Accessibility
             $parent.addEventListener('keydown', e => {
@@ -196,21 +208,25 @@ export default class Menubar
                     case 32: // Space
                     case 13: // Enter
                     case 8: // Return
+                        e.stopPropagation();
                         if (!$parent.classList.contains(this.settings.activeClass)) e.preventDefault();
                         this.open($dropdown);
                         break;
                     case 38: // Arrow up
                         e.preventDefault();
-                        if ($parent.classList.contains(this.settings.activeClass)) return;
+
+                        if ($parent.classList.contains(this.settings.activeClass) || isInnerSubMenu) return;
                         this.open($dropdown, $dropdown.querySelectorAll(this.getFocusableElements()).length);
                         break;
                     case 40: // Arrow down
                         e.preventDefault();
-                        if ($parent.classList.contains(this.settings.activeClass)) return;
+
+                        if ($parent.classList.contains(this.settings.activeClass) || isInnerSubMenu) return;
                         this.open($dropdown, 1);
                         break;
                     case 27: // Escape
-                        this.close($dropdown, $parent.querySelectorAll(this.getFocusableElements())[0]);
+                        e.stopPropagation();
+                        this.close($dropdown, $parent.querySelectorAll(this.getFocusableElements())[0], isInnerSubMenu);
                         break;
                 }
             });
@@ -231,16 +247,15 @@ export default class Menubar
      */
     dropdownAccessibilityEvents($dropdown, focusIndex)
     {
-        const focusableElements = $dropdown.parentNode.querySelectorAll(this.getFocusableElements());
+        let focusableElements = $dropdown.parentNode.querySelectorAll(this.getFocusableElements());
+        focusableElements = [...focusableElements].filter(focusableElement => parseFloat(focusableElement.getAttribute('tabindex')) !== -1);
         const firstFocusableElementInDropdown = focusableElements[1];
         const lastFocusableElement = focusableElements[focusableElements.length - 1];
 
-        if (focusIndex) {
-            focusableElements[focusIndex].focus();
-        }
+        if (focusIndex && focusableElements[focusIndex]) focusableElements[focusIndex].focus();
 
         if (!firstFocusableElementInDropdown) return;
-        window.setTimeout( () => {
+        window.setTimeout(() => {
             focusableElements.forEach(focusableElement => {
                 if (!focusableElement.addEventListener) return;
 
@@ -327,7 +342,12 @@ export default class Menubar
 
         // Dropdown accessibility
         $dropdown.setAttribute('aria-hidden', 'false');
+
+        // For each focusable elements in the dropdown, set the tabindex to 0
         $dropdown.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '0'));
+
+        // If there is a dropdown in the dropdown, ensure that the tabindex stay at -1
+        [...$dropdown.querySelectorAll(this.settings.dropdownMenu)].forEach($subMenu => $subMenu.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1')));
 
         this.dropdownAccessibilityEvents($dropdown, focus);
     }
@@ -337,8 +357,9 @@ export default class Menubar
      *
      * @param $dropdown
      * @param trigger
+     * @param isInnerSubMenu
      */
-    close($dropdown, trigger)
+    close($dropdown, trigger, isInnerSubMenu)
     {
         const $parent = $dropdown.parentNode;
 
@@ -351,7 +372,9 @@ export default class Menubar
         $dropdown.setAttribute('aria-hidden', 'true');
         $dropdown.querySelectorAll(this.getFocusableElements()).forEach($focusableElement => $focusableElement.setAttribute('tabindex', '-1'));
 
-        // Restore focus
+        // If the user closes in a dropdown in a dropdown, ensure that we get the event from the parent menu (that triggered this inner dropdown)
+        if (isInnerSubMenu) this.dropdownAccessibilityEvents($dropdown.parentNode.parentNode);
+
         if (trigger) trigger.focus();
     }
 
@@ -362,8 +385,8 @@ export default class Menubar
     {
         if (!this.$container) return;
         if (this.settings.glueTo.el) addMultipleEventListener(window, ['load', 'resize'], debounce((this.glueDropdowns).bind(this), 300));
-        this.dropdownEvents();
         this.accessibility();
+        this.dropdownEvents();
     }
 
 }
