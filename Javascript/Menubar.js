@@ -3,6 +3,7 @@ import hoverIntent from '../vendors/hoverintent';
 
 /**
  * Handle menubar
+ * TODO : METTRE EN PLACE CA : https://www.w3.org/TR/wai-aria-practices/#menu
  *
  * Accessibility : https://www.w3.org/WAI/tutorials/menus/application-menus/
  */
