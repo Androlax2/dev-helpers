@@ -3,6 +3,7 @@
 
         $buttonsBlock.forEach($buttonBlock => {
             const $childrens = Array.from($buttonBlock.children);
+                
             const maxWidth = Math.max.apply(null, $childrens.map($children => {
                 $children.removeAttribute('style');
                 return $children.getBoundingClientRect().width;
@@ -11,6 +12,7 @@
                 $children.removeAttribute('style');
                 return $children.getBoundingClientRect().height;
             }));
+                
             $childrens.forEach($children => {
                 $children.style.width = `${maxWidth}px`;
                 $children.style.height = `${maxHeight}px`;
