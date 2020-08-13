@@ -38,7 +38,9 @@ export default class Menu
     closeAllSubMenus()
     {
         this.getMenu().forEach(menuItem => {
-           if (menuItem.haveSubMenu() && menuItem.subMenuIsOpened()) menuItem.closeSubMenuAndDescendant();
+           if (menuItem.haveSubMenu() && menuItem.subMenuIsOpened()) {
+               menuItem.closeSubMenuAndDescendant();
+           }
         });
     }
 
@@ -79,6 +81,9 @@ export default class Menu
     {
         this.menu.forEach(item => {
             item.setAttributes(); // Recursively set attributes
+            if (item.haveSubMenu()) {
+                item.getSubMenu().menu.forEach(subMenuItem => subMenuItem.setAsTopLevel());
+            }
         });
     }
 
