@@ -206,6 +206,14 @@ export default class MenuItem
     }
 
     /**
+     * Set menu item as top level
+     */
+    setAsTopLevel()
+    {
+        this.topLevel = true;
+    }
+
+    /**
      * Handle events of the sub menu
      *
      * @private
@@ -275,7 +283,7 @@ export default class MenuItem
 
                     // Arrow left
                     case A11yMenu.getKeyCode('ArrowLeft'):
-                        if (!menuItemInSubMenu.haveSubMenu() && menuItemInSubMenu.topLevel) return;
+                        if (menuItemInSubMenu.topLevel) return;
                         e.preventDefault();
 
                         this.closeSubMenu();
