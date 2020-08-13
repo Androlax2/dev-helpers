@@ -35,7 +35,6 @@ export default class A11yMenu
         if (!this.settings.activeClass) throw new Error('You need to set an active class for the sub menus.');
 
         this.menubar = menubar;
-        this.positionInMenu = -1;
         this._cacheDOM();
         this._init();
     }
@@ -144,16 +143,6 @@ export default class A11yMenu
         if (!this.$items || this.$items.length === 0) throw new Error(`No ${this.$items} exists in the DOM.`);
     }
 
-    /**
-     * Get position in menu
-     *
-     * @returns {number}
-     */
-    getPositionInMenu()
-    {
-        return this.positionInMenu;
-    }
-
     _handleMenu()
     {
         const _this = this;
@@ -179,6 +168,8 @@ export default class A11yMenu
         });
 
         this.menu = menu;
+
+        console.log(menu);
     }
 
     /**
@@ -237,11 +228,11 @@ export default class A11yMenu
         });
 
         this._getMenu().forEach(topLevelItem => {
+            const positionInMenu = this._getMenu().indexOf(topLevelItem);
 
             // Events for the top level items
             topLevelItem.getToggler().addEventListener('keydown', e => {
-                this.positionInMenu = this._getMenu().indexOf(topLevelItem);
-                let menuItem = this._getMenu()[this.getPositionInMenu()];
+                let menuItem = this._getMenu()[positionInMenu];
                 let isDropdownOpen = menuItem.haveSubMenu() ? menuItem.getSubMenu().isOpen() : false;
 
                 switch (e.keyCode) {
@@ -249,10 +240,10 @@ export default class A11yMenu
                     // Arrow Left events
                     case A11yMenu.getKeyCode('ArrowLeft'):
                         e.preventDefault();
-                        if (this.getPositionInMenu() === 0) {
+                        if (positionInMenu === 0) {
                             this.menu.getLastElement().getToggler().focus();
                         } else {
-                            this._getMenu()[this.getPositionInMenu() - 1].getToggler().focus();
+                            this._getMenu()[positionInMenu - 1].getToggler().focus();
                         }
 
                         // Close all opened menus
@@ -263,10 +254,10 @@ export default class A11yMenu
                     // Arrow Right events
                     case A11yMenu.getKeyCode('ArrowRight'):
                         e.preventDefault();
-                        if (this.getPositionInMenu() === this.menu.getLength() - 1) {
+                        if (positionInMenu === this.menu.getLength() - 1) {
                             this.menu.getFirstElement().getToggler().focus();
                         } else {
-                            this._getMenu()[this.getPositionInMenu() + 1].getToggler().focus();
+                            this._getMenu()[positionInMenu + 1].getToggler().focus();
                         }
 
                         // Close all opened menus
@@ -340,10 +331,10 @@ export default class A11yMenu
                                 if (subMenuItem.haveSubMenu() && !subMenuItem.subMenuIsOpened()) return;
 
                                 e.preventDefault();
-                                if (this.getPositionInMenu() === 0) {
+                                if (positionInMenu === 0) {
                                     this.menu.getLastElement().getToggler().focus();
                                 } else {
-                                    this._getMenu()[this.getPositionInMenu() - 1].getToggler().focus();
+                                    this._getMenu()[positionInMenu - 1].getToggler().focus();
                                 }
 
                                 // Close all opened menus
@@ -356,10 +347,10 @@ export default class A11yMenu
                                 if (subMenuItem.haveSubMenu() && subMenuItem.subMenuIsOpened()) return;
 
                                 e.preventDefault();
-                                if (this.getPositionInMenu() === this.menu.getLength() - 1) {
+                                if (positionInMenu === this.menu.getLength() - 1) {
                                     this.menu.getFirstElement().getToggler().focus();
                                 } else {
-                                    this._getMenu()[this.getPositionInMenu() + 1].getToggler().focus();
+                                    this._getMenu()[positionInMenu + 1].getToggler().focus();
                                 }
 
                                 // Close all opened menus
