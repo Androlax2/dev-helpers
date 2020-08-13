@@ -326,7 +326,7 @@ export default class A11yMenu
 
                             // Arrow Left events
                             case A11yMenu.getKeyCode('ArrowLeft'):
-                                if (subMenuItem.haveSubMenu() && !subMenuItem.subMenuIsOpened()) return;
+                                if (!subMenuItem.topLevel) return;
 
                                 e.preventDefault();
                                 if (positionInMenu === 0) {
