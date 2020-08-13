@@ -231,6 +231,11 @@ export default class A11yMenu
 
         });
 
+        this.$menubar.addEventListener('focusout', e => {
+           if (this.$menubar.contains(e.relatedTarget)) return;
+           this.menu.closeAllSubMenus();
+        });
+
         this._getMenu().forEach(topLevelItem => {
 
             // Events for the top level items
