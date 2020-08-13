@@ -55,14 +55,6 @@ export default class Dropdown
     }
 
     /**
-     * Define if the dropdown is the first one
-     */
-    setAsTopMenu()
-    {
-        this.topMenu = true;
-    }
-
-    /**
      * Get first element in sub menu
      *
      * @returns {{el: (*|Element|SVGAElement|HTMLAnchorElement), position: number}}
