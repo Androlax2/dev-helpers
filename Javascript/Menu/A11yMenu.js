@@ -168,8 +168,6 @@ export default class A11yMenu
         });
 
         this.menu = menu;
-
-        console.log(menu);
     }
 
     /**
