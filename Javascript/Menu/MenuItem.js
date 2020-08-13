@@ -119,7 +119,7 @@ export default class MenuItem
     {
         this.getItem().classList.add(this.getActiveClass());
         this.getToggler().setAttribute('aria-expanded', 'true');
-        this.getSubMenu().open(this.getActiveClass());
+        this.getSubMenu().open();
     }
 
     /**
@@ -129,7 +129,7 @@ export default class MenuItem
     {
         this.getItem().classList.remove(this.getActiveClass());
         this.getToggler().setAttribute('aria-expanded', 'false');
-        this.getSubMenu().close(this.getActiveClass());
+        this.getSubMenu().close();
         this.currentFocusInSubMenu = -1;
     }
 
