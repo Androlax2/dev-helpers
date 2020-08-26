@@ -102,7 +102,6 @@ export default class DOMAnimations
             if (!((val += .1) > 1)) {
                 element.style.opacity = val;
                 requestAnimationFrame(fade);
-                console.log(val);
             }
         })();
     }
