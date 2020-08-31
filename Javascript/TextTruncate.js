@@ -16,6 +16,7 @@ export default class TextTruncate
         this.settings = {
             showMoreTextAttribute: 'data-show-more-text',
             showLessTextAttribute: 'data-show-less-text',
+            showMoreButton: true,
             showMoreButtonClass: 'showMore',
             overflow: ' ...'
         };
@@ -56,7 +57,7 @@ export default class TextTruncate
      */
     _hasShowMore()
     {
-        return this.settings.showMoreTextAttribute !== '' || this.settings.showLessTextAttribute !== '';
+        return this.settings.showMoreButton;
     }
 
     /**
