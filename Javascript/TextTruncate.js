@@ -19,6 +19,7 @@ export default class TextTruncate
             showMoreButtonClass: 'showMore',
             overflow: ' ...'
         };
+        this._isTruncated = false;
         this._setupSettings(settings);
 
         if (this._hasShowMore()) {
@@ -59,6 +60,46 @@ export default class TextTruncate
     }
 
     /**
+     * Is the text truncated
+     *
+     * @returns {boolean}
+     */
+    isTruncated()
+    {
+        return this._isTruncated;
+    }
+
+    /**
+     * Show truncated text
+     */
+    showTruncatedText()
+    {
+        const truncatedText = this.$el.getAttribute('data-truncated-text');
+        const $showMoreButton = this._hasShowMore() ? this.$el.querySelector('button') : null;
+        const $span = this.$el.querySelector('span');
+
+        this.$el.setAttribute('data-is-truncated', 'false');
+        $span.textContent = ` ${truncatedText}`;
+        if (this._hasShowMore()) $showMoreButton.textContent = this.showLessText;
+        $span.setAttribute('tabindex', '0');
+        $span.focus();
+    }
+
+    /**
+     * Hide truncated text
+     */
+    hideTruncatedText()
+    {
+        const $showMoreButton = this._hasShowMore() ? this.$el.querySelector('button') : null;
+        const $span = this.$el.querySelector('span');
+
+        this.$el.setAttribute('data-is-truncated', 'true');
+        $span.textContent = this.settings.overflow;
+        if (this._hasShowMore()) $showMoreButton.textContent = this.showMoreText;
+        $span.setAttribute('tabindex', '-1');
+    }
+
+    /**
      * Create show more button
      *
      * @returns {HTMLButtonElement}
@@ -74,21 +115,11 @@ export default class TextTruncate
             e.preventDefault();
 
             const isTruncated = this.$el.getAttribute('data-is-truncated').toLowerCase() === 'true';
-            const truncatedText = this.$el.getAttribute('data-truncated-text');
-            const $showMoreButton = this.$el.querySelector('button');
-            const $span = this.$el.querySelector('span');
 
             if (isTruncated) {
-                this.$el.setAttribute('data-is-truncated', 'false');
-                $span.textContent = ` ${truncatedText}`;
-                $showMoreButton.textContent = this.showLessText;
-                $span.setAttribute('tabindex', '0');
-                $span.focus();
+                this.showTruncatedText();
             } else {
-                this.$el.setAttribute('data-is-truncated', 'true');
-                $span.textContent = this.settings.overflow;
-                $showMoreButton.textContent = this.showMoreText;
-                $span.setAttribute('tabindex', '-1');
+                this.hideTruncatedText();
             }
         };
 
@@ -103,6 +134,7 @@ export default class TextTruncate
         let content = (this.$el.textContent.trim()).split(' ');
         if (content.length < this.wordLimit) return;
 
+        this._isTruncated = true;
         this.$el.setAttribute('data-is-truncated', 'true');
         this.$el.setAttribute('data-truncated-text', (content.slice(this.wordLimit, content.length)).join(' '));
         content = content.slice(0, this.wordLimit);
