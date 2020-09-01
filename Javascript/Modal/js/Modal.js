@@ -151,7 +151,7 @@ export default class Modal extends HTMLElement {
         }
 
         // On backdrop click
-        this.addEventListener('click', e => {
+        this.addEventListener('mousedown', e => {
             if (e.target === this) this.close(trigger);
         });
 
