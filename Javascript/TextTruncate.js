@@ -82,7 +82,7 @@ export default class TextTruncate {
 		if (this._hasShowMore()) $showMoreButton.textContent = this.showLessText;
 		$span.setAttribute('tabindex', '0');
 		$span.focus();
-		this.$el.dispatchEvent(new Event('show-truncated-text'));
+		this.$el.dispatchEvent(new Event('showTruncatedText'));
 	}
 
 	/**
@@ -97,7 +97,7 @@ export default class TextTruncate {
 		if (this._hasShowMore()) $showMoreButton.textContent = this.showMoreText;
 		$span.setAttribute('tabindex', '-1');
 
-		this.$el.dispatchEvent(new Event('hide-truncated-text'));
+		this.$el.dispatchEvent(new Event('hideTruncatedText'));
 	}
 
 	/**
