@@ -36,167 +36,160 @@ const throttle = (callback, delay) => {
 /**
  * Line moving on cursor hover
  */
-export default class LineMove
-{
-    
-    /**
-     * How many times line moved (to debug correctly)
-     *
-     * @type {number}
-     */
-    static lineMoves = 0;
+export default class LineMove {
 
-    constructor(settings = {})
-    {
-        this.settings = {
-            element: '',
-            hover: '',
-            activeSelector: '',
-            debug: false
-        };
-        this._setupSettings(settings);
+	/**
+	 * How many times line moved (to debug correctly)
+	 *
+	 * @type {number}
+	 */
+	static lineMoves = 0;
 
-        if (!this.settings.element) throw new Error('You need to specify element selector for LineMove to work correctly.');
-        if (!this.settings.hover) throw new Error('You need to specify hover selector for LineMove to work correctly.');
+	constructor(settings = {}) {
+		this.settings = {
+			element: '',
+			hover: '',
+			activeSelector: '',
+			debug: false
+		};
+		this._setupSettings(settings);
 
-        this._cacheDOM();
+		if (!this.settings.element) throw new Error('You need to specify element selector for LineMove to work correctly.');
+		if (!this.settings.hover) throw new Error('You need to specify hover selector for LineMove to work correctly.');
 
-        this._init();
-    }
+		this._cacheDOM();
 
-    /**
-     * Cache DOM elements
-     *
-     * @private
-     */
-    _cacheDOM()
-    {
-        this.$el = document.querySelector(this.settings.element);
-        this.$activeItem = document.querySelector(this.settings.activeSelector);
-        this.$hovers = document.querySelectorAll(this.settings.hover);
-    }
+		this._init();
+	}
 
-    /**
-     * Set up settings defined in the creation of the instance
-     *
-     * @param settings
-     * @private
-     */
-    _setupSettings(settings)
-    {
-        if (Object.keys(settings).length > 0) {
-            for (let key in settings) {
-                if (settings.hasOwnProperty(key) && this.settings.hasOwnProperty(key)) this.settings[key] = settings[key];
-            }
-        }
-    }
-    
-    /**
-     * Increment and return total line moves
-     *
-     * @returns {number}
-     */
-    static getLineMoves()
-    {
-        return this.lineMoves++;
-    }
+	/**
+	 * Increment and return total line moves
+	 *
+	 * @returns {number}
+	 */
+	static getLineMoves() {
+		return this.lineMoves++;
+	}
 
-    /**
-     * Move the line to an element
-     *
-     * @param $element
-     * @param resize
-     */
-    moveTo($element, resize = false)
-    {
-        if (
-            typeof $element === 'undefined' ||
-            $element === null ||
-            $element.length === 0 ||
-            window.getComputedStyle(this.$el).display === 'none' ||
-            this.$el.offsetParent === null
-        ) return;
+	/**
+	 * Cache DOM elements
+	 *
+	 * @private
+	 */
+	_cacheDOM() {
+		this.$el = document.querySelector(this.settings.element);
+		this.$activeItem = document.querySelector(this.settings.activeSelector);
+		this.$hovers = document.querySelectorAll(this.settings.hover);
+	}
 
-        if (this.settings.debug) {
-            console.info(
-                `%c ${LineMove.getLineMoves()} : Line\n%o \n has moved to \n %o. \n`,
-                'background: #222; color: #bada55',
-                this.$el,
-                $element
-            );
-        }
+	/**
+	 * Set up settings defined in the creation of the instance
+	 *
+	 * @param settings
+	 * @private
+	 */
+	_setupSettings(settings) {
+		if (Object.keys(settings).length > 0) {
+			for (let key in settings) {
+				if (settings.hasOwnProperty(key) && this.settings.hasOwnProperty(key)) this.settings[key] = settings[key];
+			}
+		}
+	}
 
-        const elementRect = $element.getBoundingClientRect();
-        const isLineActive = this.$el.getAttribute('line-is-active');
+	/**
+	 * Move the line to an element
+	 *
+	 * @param $element
+	 * @param resize
+	 */
+	moveTo($element, resize = false) {
+		if (
+			typeof $element === 'undefined' ||
+			$element === null ||
+			$element.length === 0 ||
+			window.getComputedStyle(this.$el).display === 'none' ||
+			this.$el.offsetParent === null
+		) return;
 
-        // No transition if we don't see the line
-        if (!isLineActive) {
-            this.$el.setAttribute('line-is-active', 'true');
-            this.$el.style.transition = 'none';
-        } else {
-            this.$el.style.transition = '';
-        }
+		if (this.settings.debug) {
+			console.info(
+				`%c ${LineMove.getLineMoves()} : Line\n%o \n has moved to \n %o. \n`,
+				'background: #222; color: #bada55',
+				this.$el,
+				$element
+			);
+		}
 
-        this.$el.style.width = `${elementRect.width}px`;
-        this.$el.style.left = `${elementRect.left}px`;
+		const elementRect = $element.getBoundingClientRect();
+		const isLineActive = this.$el.getAttribute('line-is-active');
 
-        if (!resize) {
-            if (this.$previousActiveLineItem) this.$previousActiveLineItem.removeAttribute('line-item-is-active');
-            $element.setAttribute('line-item-is-active', 'true');
-            this.$previousActiveLineItem = $element;
-            this.$activeLineItem = $element;
-        }
-    }
+		// No transition if we don't see the line
+		if (!isLineActive) {
+			this.$el.setAttribute('line-is-active', 'true');
+			this.$el.style.transition = 'none';
+		} else {
+			this.$el.style.transition = '';
+		}
 
-    /**
-     * Move the line to the active item on load
-     *
-     * @private
-     */
-    _moveLineOnLoad()
-    {
-        this.moveTo(this.$activeItem);
-    }
+		// No transition if we're resizing
+		if (resize) this.$el.style.transition = 'none';
 
-    /**
-     * Handle hover on line
-     *
-     * @private
-     */
-    _handleHover()
-    {
-        const that = this;
+		this.$el.style.width = `${elementRect.width}px`;
+		this.$el.style.left = `${elementRect.left}px`;
 
-        this.$hovers.forEach($hover => {
-            addMultipleEventListener($hover, ['mouseover', 'focusin'], throttle(function () {
+		if (!resize) {
+			if (this.$previousActiveLineItem) this.$previousActiveLineItem.removeAttribute('line-item-is-active');
+			$element.setAttribute('line-item-is-active', 'true');
+			this.$previousActiveLineItem = $element;
+			this.$activeLineItem = $element;
+		}
+	}
+
+	/**
+	 * Move the line to the active item on load
+	 *
+	 * @private
+	 */
+	_moveLineOnLoad() {
+		this.moveTo(this.$activeItem);
+	}
+
+	/**
+	 * Handle hover on line
+	 *
+	 * @private
+	 */
+	_handleHover() {
+		const that = this;
+
+		this.$hovers.forEach($hover => {
+			addMultipleEventListener($hover, ['mouseover', 'focusin'], throttle(function () {
 				that.moveTo(this);
 			}, 25));
 			addMultipleEventListener($hover, ['mouseover', 'focusout'], throttle(function () {
 				that.moveTo(that.$activeItem);
 			}, 25));
-        });
-    }
+		});
+	}
 
-    /**
-     * Move the line on resize
-     *
-     * @private
-     */
-    _onResize = () =>
-    {
-        this.moveTo(this.$activeLineItem, true);
-    };
+	/**
+	 * Move the line on resize
+	 *
+	 * @private
+	 */
+	_onResize = () => {
+		this.moveTo(this.$activeLineItem, true);
+	};
 
-    /**
-     * Initialization of everything
-     *
-     * @private
-     */
-    _init()
-    {
-        this._moveLineOnLoad();
-        this._handleHover();
-        window.addEventListener('resize', debounce(this._onResize, 50));
-    }
+	/**
+	 * Initialization of everything
+	 *
+	 * @private
+	 */
+	_init() {
+		this._moveLineOnLoad();
+		this._handleHover();
+		window.addEventListener('resize', debounce(this._onResize, 5));
+	}
 
 }
