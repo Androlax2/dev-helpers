@@ -1,3 +1,5 @@
+const addMultipleEventListener = (element, events, handler) => events.forEach(e => element.addEventListener(e, handler));
+
 const debounce = (callback, delay) => {
     let timer;
     return function () {
@@ -166,12 +168,12 @@ export default class LineMove
         const that = this;
 
         this.$hovers.forEach($hover => {
-            $hover.addEventListener('mouseover', throttle(function () {
-                that.moveTo(this);
-            }, 25));
-            $hover.addEventListener('mouseout', throttle(function () {
-                that.moveTo(that.$activeItem);
-            }, 25));
+            addMultipleEventListener($hover, ['mouseover', 'focusin'], throttle(function () {
+				that.moveTo(this);
+			}, 25));
+			addMultipleEventListener($hover, ['mouseover', 'focusout'], throttle(function () {
+				that.moveTo(that.$activeItem);
+			}, 25));
         });
     }
 
