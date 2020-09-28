@@ -1,38 +1,38 @@
-$back-to-top-width: 50px;
-$back-to-top-height: 50px;
-
-$back-to-top-background-color: red;
-$back-to-top-background-color-hover: blue;
-
-$back-to-top-offset-right: 20px;
-
 back-to-top {
-  width: $back-to-top-width;
-  height: $back-to-top-height;
-  transform: rotate(45deg);
-  backface-visibility: hidden;
-  background-color: $back-to-top-background-color;
-  position: fixed;
-  bottom: 30px;
-  @media only screen and (max-width: 450px) {
-    bottom: 15px;
-  }
-  right: $back-to-top-width * -1;
-  cursor: pointer;
-  z-index: 20;
+  --backToTopBackgroundColor: #575757;
+  --backToTopBackgroundColorHover: var(--deepBlushColor);
+  --backToTopHeight: 50px;
+  --backToTopOffsetRight: 20px;
+  --backToTopWidth: 50px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+  width: var(--backToTopWidth);
+  height: var(--backToTopHeight);
+  position: fixed;
+  z-index: 20;
+  right: calc(var(--backToTopWidth) * -1);
+  bottom: 30px;
+  cursor: pointer;
+  background-color: var(--backToTopBackgroundColor);
   transition: background-color .3s, right .3s ease-in-out;
-  svg {
-    transform: rotate(-45deg);
+  backface-visibility: hidden;
+  @media only screen and (max-width: 450px) {
+	bottom: 15px;
   }
+
   @media (hover: hover) {
-    &:hover {
-      background-color: $back-to-top-background-color-hover;
-    }
+	&:hover {
+	  --backToTopBackgroundColor: var(--backToTopBackgroundColorHover);
+	}
   }
+
+  &:focus {
+	--backToTopBackgroundColor: var(--backToTopBackgroundColorHover);
+  }
+
   &.is-active {
-    right: $back-to-top-offset-right;
+	right: var(--backToTopOffsetRight);
   }
 }
