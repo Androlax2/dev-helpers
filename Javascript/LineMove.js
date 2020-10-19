@@ -187,8 +187,10 @@ export default class LineMove {
 	 * @private
 	 */
 	_init() {
-		this._moveLineOnLoad();
-		this._handleHover();
+		window.addEventListener('load', () => {
+			this._moveLineOnLoad();
+			this._handleHover();
+		});
 		window.addEventListener('resize', debounce(this._onResize, 5));
 	}
 
