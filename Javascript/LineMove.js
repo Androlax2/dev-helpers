@@ -163,10 +163,10 @@ export default class LineMove {
 		const that = this;
 
 		this.$hovers.forEach($hover => {
-			addMultipleEventListener($hover, ['mouseover', 'focusin'], throttle(function () {
+			addMultipleEventListener($hover, ['mouseover', 'focusin', 'touchstart'], throttle(function () {
 				that.moveTo(this);
 			}, 25));
-			addMultipleEventListener($hover, ['mouseover', 'focusout'], throttle(function () {
+			addMultipleEventListener($hover, ['mouseover', 'focusout', 'touchstart'], throttle(function () {
 				that.moveTo(that.$activeItem);
 			}, 25));
 		});
