@@ -50,6 +50,7 @@ export default class LineMove {
 			element: '',
 			hover: '',
 			activeSelector: '',
+			relativeTo: '',
 			debug: false
 		};
 		this._setupSettings(settings);
@@ -80,6 +81,7 @@ export default class LineMove {
 		this.$el = document.querySelector(this.settings.element);
 		this.$activeItem = document.querySelector(this.settings.activeSelector);
 		this.$hovers = document.querySelectorAll(this.settings.hover);
+		this.$relativeTo = document.querySelector(this.settings.relativeTo);
 	}
 
 	/**
@@ -120,7 +122,20 @@ export default class LineMove {
 			);
 		}
 
-		const elementRect = $element.getBoundingClientRect();
+		let elementRect = $element.getBoundingClientRect();
+
+		if (this.$relativeTo) {
+			const relativeToRect = this.$relativeTo.getBoundingClientRect();
+			const elementRectCache = elementRect;
+			elementRect = {};
+
+			elementRect.top = elementRectCache.top - relativeToRect.top;
+			elementRect.right = elementRectCache.right - relativeToRect.right;
+			elementRect.bottom = elementRectCache.bottom - relativeToRect.bottom;
+			elementRect.left = elementRectCache.left - relativeToRect.left;
+			elementRect.width = elementRectCache.width;
+		}
+
 		const isLineActive = this.$el.getAttribute('line-is-active');
 
 		// No transition if we don't see the line
