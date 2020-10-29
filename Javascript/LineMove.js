@@ -51,6 +51,7 @@ export default class LineMove {
 			hover: '',
 			activeSelector: '',
 			relativeTo: '',
+			dir: 'ltr',
 			debug: false
 		};
 		this._setupSettings(settings);
@@ -150,7 +151,12 @@ export default class LineMove {
 		if (resize) this.$el.style.transition = 'none';
 
 		this.$el.style.width = `${elementRect.width}px`;
-		this.$el.style.left = `${elementRect.left}px`;
+
+		if (this.settings.dir === 'rtl') {
+			this.$el.style.right = `${elementRect.right * -1}px`;
+		} else {
+			this.$el.style.left = `${elementRect.left}px`;
+		}
 
 		if (!resize) {
 			if (this.$previousActiveLineItem) this.$previousActiveLineItem.removeAttribute('line-item-is-active');
