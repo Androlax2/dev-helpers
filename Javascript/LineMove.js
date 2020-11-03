@@ -187,8 +187,8 @@ export default class LineMove {
 			addMultipleEventListener($hover, ['mouseover', 'focusin', 'touchstart'], throttle(function () {
 				that.moveTo(this);
 			}, 25));
-			addMultipleEventListener($hover, ['mouseover', 'focusout', 'touchstart'], throttle(function () {
-				that.moveTo(that.$activeItem);
+			addMultipleEventListener($hover, ['mouseout', 'focusout', 'touchend'], throttle(function () {
+				that.moveTo(document.querySelector(that.settings.activeSelector));
 			}, 25));
 		});
 	}
