@@ -82,7 +82,7 @@ export default class LineMove {
 		this.$el = document.querySelector(this.settings.element);
 		this.$activeItem = document.querySelector(this.settings.activeSelector);
 		this.$hovers = document.querySelectorAll(this.settings.hover);
-		this.$relativeTo = document.querySelector(this.settings.relativeTo);
+		this.$relativeTo = this.settings.relativeTo ? document.querySelector(this.settings.relativeTo) : null;
 	}
 
 	/**
