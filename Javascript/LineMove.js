@@ -52,7 +52,8 @@ export default class LineMove {
 			activeSelector: '',
 			relativeTo: '',
 			dir: 'ltr',
-			debug: false
+			debug: false,
+			direction: 'horizontal'
 		};
 		this._setupSettings(settings);
 
@@ -135,6 +136,7 @@ export default class LineMove {
 			elementRect.bottom = elementRectCache.bottom - relativeToRect.bottom;
 			elementRect.left = elementRectCache.left - relativeToRect.left;
 			elementRect.width = elementRectCache.width;
+			elementRect.height = elementRectCache.height;
 		}
 
 		const isLineActive = this.$el.getAttribute('line-is-active');
@@ -150,12 +152,20 @@ export default class LineMove {
 		// No transition if we're resizing
 		if (resize) this.$el.style.transition = 'none';
 
-		this.$el.style.width = `${elementRect.width}px`;
+		if (this.settings.direction === 'horizontal') {
+			this.$el.style.width = `${elementRect.width}px`;
+		} else if (this.settings.direction === 'vertical') {
+			this.$el.style.height = `${elementRect.height}px`;
+		}
 
-		if (this.settings.dir === 'rtl') {
-			this.$el.style.right = `${elementRect.right * -1}px`;
-		} else {
-			this.$el.style.left = `${elementRect.left}px`;
+		if (this.settings.direction === 'horizontal') {
+			if (this.settings.dir === 'rtl') {
+				this.$el.style.right = `${elementRect.right * -1}px`;
+			} else {
+				this.$el.style.left = `${elementRect.left}px`;
+			}
+		} else if (this.settings.direction === 'vertical') {
+			this.$el.style.top = `${elementRect.top}px`;
 		}
 
 		if (!resize) {
