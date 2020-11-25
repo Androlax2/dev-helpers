@@ -61,7 +61,6 @@ use StoutLogic\AcfBuilder\FieldsBuilder;
 						        'required' => true,
 						        'label' => 'Texte'
 					        ])
-	                    ->addLayout($this->get(Video::class))
 	                ->endFlexibleContent()
 	            ->endRepeater()
 	        ->endRepeater();
